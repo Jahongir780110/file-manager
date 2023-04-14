@@ -1,0 +1,11 @@
+{
+  "name": "file-manager",
+  "version": "1.0.0",
+  "description": "Node.js File Manager App",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Jakhongir Ismoilov <jahongir780110@gmail.com>",
+  "license": "ISC"
+}
