@@ -1,9 +1,9 @@
-const { logExitText } = require("./utils");
-const { initialize } = require("./init");
-const { fsOperations } = require("./fs");
-const { osOperations } = require("./os");
-const { hashOperations } = require("./hash");
-const { compressOperations } = require("./compress");
+import { logExitText } from "./utils.js";
+import initialize from "./init.js";
+import fsOperations from "./fs.js";
+import osOperations from "./os.js";
+import hashOperations from "./hash.js";
+import compressOperations from "./compress.js";
 
 initialize();
 

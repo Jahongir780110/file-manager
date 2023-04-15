@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
-const { logCurrentDirectory, logError } = require("./utils");
+import fs from "fs";
+import path from "path";
+import { logCurrentDirectory, logError } from "./utils.js";
 
-exports.fsOperations = {
+const fsOperations = {
   up() {
     process.chdir("..");
     logCurrentDirectory();
@@ -159,3 +159,5 @@ exports.fsOperations = {
     }
   },
 };
+
+export default fsOperations;

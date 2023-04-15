@@ -1,7 +1,7 @@
-const os = require("os");
-const { logCurrentDirectory } = require("./utils");
+import os from "os";
+import { logCurrentDirectory } from "./utils.js";
 
-exports.osOperations = {
+const osOperations = {
   eol() {
     const defaultEOL = JSON.stringify(os.EOL);
     console.log(`Default system EOL is ${defaultEOL}`);
@@ -35,3 +35,5 @@ exports.osOperations = {
     logCurrentDirectory();
   },
 };
+
+export default osOperations;

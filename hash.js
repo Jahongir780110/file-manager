@@ -1,8 +1,8 @@
-const fs = require("fs");
-const crypto = require("crypto");
-const { logCurrentDirectory, logError } = require("./utils");
+import fs from "fs";
+import crypto from "crypto";
+import { logCurrentDirectory, logError } from "./utils.js";
 
-exports.hashOperations = {
+const hashOperations = {
   async hash(normalizedData) {
     const pathToFile = normalizedData.split("hash ")[1];
     try {
@@ -18,3 +18,5 @@ exports.hashOperations = {
     }
   },
 };
+
+export default hashOperations;

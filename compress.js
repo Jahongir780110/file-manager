@@ -1,8 +1,8 @@
-const fs = require("fs");
-const zlib = require("zlib");
-const { logCurrentDirectory, logError } = require("./utils");
+import fs from "fs";
+import zlib from "zlib";
+import { logCurrentDirectory, logError } from "./utils.js";
 
-exports.compressOperations = {
+const compressOperations = {
   async compress(normalizedData) {
     await new Promise((resolve, reject) => {
       const pathToFile = normalizedData.split("compress ")[1].split(" ")[0];
@@ -58,3 +58,5 @@ exports.compressOperations = {
     });
   },
 };
+
+export default compressOperations;
