@@ -4,8 +4,8 @@ import { logCurrentDirectory, logError } from "./utils.js";
 
 const hashOperations = {
   async hash(normalizedData) {
-    const pathToFile = normalizedData.split("hash ")[1];
     try {
+      const pathToFile = normalizedData.split("hash ")[1];
       const fileContent = await fs.promises.readFile(pathToFile);
       const hash = crypto
         .createHash("sha256")

@@ -4,58 +4,66 @@ import { logCurrentDirectory, logError } from "./utils.js";
 
 const compressOperations = {
   async compress(normalizedData) {
-    await new Promise((resolve, reject) => {
-      const pathToFile = normalizedData.split("compress ")[1].split(" ")[0];
-      const pathToDestination = normalizedData
-        .split("compress ")[1]
-        .split(" ")[1];
+    try {
+      await new Promise((resolve, reject) => {
+        const pathToFile = normalizedData.split("compress ")[1].split(" ")[0];
+        const pathToDestination = normalizedData
+          .split("compress ")[1]
+          .split(" ")[1];
 
-      const readStream = fs.createReadStream(pathToFile);
-      const writeStream = fs.createWriteStream(pathToDestination);
-      const compressStream = zlib.createBrotliCompress();
+        const readStream = fs.createReadStream(pathToFile);
+        const writeStream = fs.createWriteStream(pathToDestination);
+        const compressStream = zlib.createBrotliCompress();
 
-      readStream.pipe(compressStream).pipe(writeStream);
+        readStream.pipe(compressStream).pipe(writeStream);
 
-      readStream.on("error", (err) => {
-        logError(err);
+        readStream.on("error", (err) => {
+          reject(err);
+        });
+
+        writeStream.on("error", (err) => {
+          reject(err);
+        });
+
+        writeStream.on("finish", () => {
+          logCurrentDirectory();
+          resolve();
+        });
       });
-
-      writeStream.on("error", (err) => {
-        logError(err);
-      });
-
-      writeStream.on("finish", () => {
-        logCurrentDirectory();
-        resolve();
-      });
-    });
+    } catch (err) {
+      logError(err);
+    }
   },
   async decompress(normalizedData) {
-    await new Promise((resolve, reject) => {
-      const pathToFile = normalizedData.split("decompress ")[1].split(" ")[0];
-      const pathToDestination = normalizedData
-        .split("decompress ")[1]
-        .split(" ")[1];
+    try {
+      await new Promise((resolve, reject) => {
+        const pathToFile = normalizedData.split("decompress ")[1].split(" ")[0];
+        const pathToDestination = normalizedData
+          .split("decompress ")[1]
+          .split(" ")[1];
 
-      const readStream = fs.createReadStream(pathToFile);
-      const writeStream = fs.createWriteStream(pathToDestination);
-      const decompressStream = zlib.createBrotliDecompress();
+        const readStream = fs.createReadStream(pathToFile);
+        const writeStream = fs.createWriteStream(pathToDestination);
+        const decompressStream = zlib.createBrotliDecompress();
 
-      readStream.pipe(decompressStream).pipe(writeStream);
+        readStream.pipe(decompressStream).pipe(writeStream);
 
-      readStream.on("error", (err) => {
-        logError(err);
+        readStream.on("error", (err) => {
+          reject(err);
+        });
+
+        writeStream.on("error", (err) => {
+          reject(err);
+        });
+
+        writeStream.on("finish", () => {
+          logCurrentDirectory();
+          resolve();
+        });
       });
-
-      writeStream.on("error", (err) => {
-        logError(err);
-      });
-
-      writeStream.on("finish", () => {
-        logCurrentDirectory();
-        resolve();
-      });
-    });
+    } catch (err) {
+      logError(err);
+    }
   },
 };
 

@@ -50,29 +50,32 @@ const fsOperations = {
     }
   },
   async cat(normalizedData) {
-    await new Promise((resolve, reject) => {
-      const pathToDirectory = normalizedData.split("cat ")[1];
-      const readStream = fs.createReadStream(pathToDirectory);
-      readStream.setEncoding("utf-8");
+    try {
+      await new Promise((resolve, reject) => {
+        const pathToDirectory = normalizedData.split("cat ")[1];
+        const readStream = fs.createReadStream(pathToDirectory);
+        readStream.setEncoding("utf-8");
 
-      readStream.on("data", (chunk) => {
-        console.log(chunk);
-      });
+        readStream.on("data", (chunk) => {
+          console.log(chunk);
+        });
 
-      readStream.on("end", () => {
-        logCurrentDirectory();
-        resolve();
-      });
+        readStream.on("end", () => {
+          logCurrentDirectory();
+          resolve();
+        });
 
-      readStream.on("error", (err) => {
-        logError(err);
+        readStream.on("error", (err) => {
+          reject(err);
+        });
       });
-    });
+    } catch (e) {
+      logError(e);
+    }
   },
   async add(normalizedData) {
-    const filename = normalizedData.split("add ")[1];
-
     try {
+      const filename = normalizedData.split("add ")[1];
       await fs.promises.writeFile(filename, "");
       logCurrentDirectory();
     } catch (err) {
@@ -80,10 +83,9 @@ const fsOperations = {
     }
   },
   async rn(normalizedData) {
-    const oldFilenamePath = normalizedData.split("rn ")[1].split(" ")[0];
-    const newFilename = normalizedData.split("rn ")[1].split(" ")[1];
-
     try {
+      const oldFilenamePath = normalizedData.split("rn ")[1].split(" ")[0];
+      const newFilename = normalizedData.split("rn ")[1].split(" ")[1];
       await fs.promises.rename(
         oldFilenamePath,
         path.join(path.dirname(oldFilenamePath), newFilename)
@@ -94,64 +96,76 @@ const fsOperations = {
     }
   },
   async cp(normalizedData) {
-    await new Promise((resolve, reject) => {
-      const oldFilenamePath = normalizedData.split("cp ")[1].split(" ")[0];
-      const newFolderPath = normalizedData.split("cp ")[1].split(" ")[1];
+    try {
+      await new Promise((resolve, reject) => {
+        const oldFilenamePath = normalizedData.split("cp ")[1].split(" ")[0];
+        const newFolderPath = normalizedData.split("cp ")[1].split(" ")[1];
 
-      const readStream = fs.createReadStream(oldFilenamePath);
-      const writeStream = fs.createWriteStream(
-        path.join(newFolderPath, path.basename(oldFilenamePath))
-      );
+        const readStream = fs.createReadStream(oldFilenamePath);
+        const writeStream = fs.createWriteStream(
+          path.join(newFolderPath, path.basename(oldFilenamePath))
+        );
 
-      readStream.on("data", (chunk) => {
-        writeStream.write(chunk);
+        readStream.on("data", (chunk) => {
+          writeStream.write(chunk);
+        });
+
+        readStream.on("end", () => {
+          writeStream.end();
+          logCurrentDirectory();
+          resolve();
+        });
+
+        readStream.on("error", (err) => {
+          reject(err);
+        });
+        writeStream.on("error", (err) => {
+          reject(err);
+        });
       });
-
-      readStream.on("end", () => {
-        writeStream.end();
-        logCurrentDirectory();
-        resolve();
-      });
-
-      readStream.on("error", (err) => {
-        logError(err);
-      });
-    });
+    } catch (err) {
+      logError(err);
+    }
   },
   async mv(normalizedData) {
-    await new Promise((resolve, reject) => {
-      const oldFilenamePath = normalizedData.split("mv ")[1].split(" ")[0];
-      const newFolderPath = normalizedData.split("mv ")[1].split(" ")[1];
+    try {
+      await new Promise((resolve, reject) => {
+        const oldFilenamePath = normalizedData.split("mv ")[1].split(" ")[0];
+        const newFolderPath = normalizedData.split("mv ")[1].split(" ")[1];
 
-      const readStream = fs.createReadStream(oldFilenamePath);
-      const writeStream = fs.createWriteStream(
-        path.join(newFolderPath, path.basename(oldFilenamePath))
-      );
+        const readStream = fs.createReadStream(oldFilenamePath);
+        const writeStream = fs.createWriteStream(
+          path.join(newFolderPath, path.basename(oldFilenamePath))
+        );
 
-      readStream.on("data", (chunk) => {
-        writeStream.write(chunk);
-      });
+        readStream.on("data", (chunk) => {
+          writeStream.write(chunk);
+        });
 
-      readStream.on("end", async () => {
-        writeStream.end();
+        readStream.on("end", () => {
+          writeStream.end();
+        });
 
-        try {
+        writeStream.on("finish", async () => {
           await fs.promises.unlink(oldFilenamePath);
           logCurrentDirectory();
           resolve();
-        } catch (e) {
-          logError(e);
-        }
-      });
+        });
 
-      readStream.on("error", (err) => {
-        logError(err);
+        readStream.on("error", (err) => {
+          reject(err);
+        });
+        writeStream.on("error", (err) => {
+          reject(err);
+        });
       });
-    });
+    } catch (err) {
+      logError(err);
+    }
   },
   async rm(normalizedData) {
-    const pathToFile = normalizedData.split("rm ")[1];
     try {
+      const pathToFile = normalizedData.split("rm ")[1];
       await fs.promises.unlink(pathToFile);
       return logCurrentDirectory();
     } catch (err) {
