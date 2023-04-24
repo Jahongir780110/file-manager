@@ -8,7 +8,7 @@ function initialize() {
     process.exit();
   }
 
-  const username = args[0].slice(args[0].indexOf("=") + 1);
+  const username = args[0].slice(args[0].indexOf("=") + 1); // Jakhongir
   console.log(`Welcome to the File Manager, ${username}!`);
 
   process.chdir(os.homedir());
